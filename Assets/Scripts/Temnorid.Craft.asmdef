@@ -1,0 +1,25 @@
+{
+  "name": "Temnorid.Craft",
+  "rootNamespace": "Temnorid.Craft",
+  "references": [
+    "ITKamianets.Engine.Core",
+    "ITKamianets.Engine.Input",
+    "ITKamianets.Engine.Save",
+    "ITKamianets.Engine.Inventory",
+    "Unity.InputSystem",
+    "UnityEngine.UI",
+    "ITKamianets.Engine.UI",
+    "ITKamianets.Engine.Graybox"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": true,
+  "precompiledReferences": [
+    "Newtonsoft.Json.dll"
+  ],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

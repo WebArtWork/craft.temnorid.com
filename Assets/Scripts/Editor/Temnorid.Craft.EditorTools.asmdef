@@ -1,0 +1,23 @@
+{
+  "name": "Temnorid.Craft.EditorTools",
+  "rootNamespace": "Temnorid.Craft.EditorTools",
+  "references": [
+    "Temnorid.Craft",
+    "ITKamianets.Engine.Character",
+    "ITKamianets.Engine.CharacterView.Camera",
+    "ITKamianets.Engine.CharacterView.Controls",
+    "ITKamianets.Engine.Graybox",
+    "ITKamianets.Engine.Graybox.Editor"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}
