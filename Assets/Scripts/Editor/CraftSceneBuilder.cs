@@ -13,14 +13,14 @@ namespace Temnorid.Craft.EditorTools
 {
 	/// <summary>
 	/// Builds the settlement from Unity primitives only: the ground, a forest, a rock field, an iron field,
-	/// the warehouse, the worker and the camera. Run it from the menu (Temnorid > Craft > Build Scene) or the
+	/// ponds, grain fields, clay pits, the warehouse, the worker and the camera. Run it from the menu (Temnorid > Craft > Build Scene) or the
 	/// command line (<c>-executeMethod Temnorid.Craft.EditorTools.CraftSceneBuilder.Build</c>); it rebuilds
 	/// <c>Assets/Scenes/Main.unity</c> from scratch each time, so do not edit that scene by hand.
 	/// </summary>
 	public static class CraftSceneBuilder
 	{
 		const string ScenePath = "Assets/Scenes/Main.unity";
-		public const string Version = "0.2.0";
+		public const string Version = "0.3.0";
 		const string MaterialDir = "Assets/Materials";
 
 		[MenuItem("Temnorid/Craft/Build Scene")]
@@ -40,6 +40,9 @@ namespace Temnorid.Craft.EditorTools
 			BuildForest(world);
 			BuildRockField(world);
 			BuildIronField(world);
+			BuildPonds(world);
+			BuildGrainFields(world);
+			BuildClayPits(world);
 			BuildWarehouse(world);
 
 			var player = BuildPlayer();
@@ -128,6 +131,72 @@ namespace Temnorid.Craft.EditorTools
 				Prim(PrimitiveType.Cube, "Vein", node.Visual, new Vector3(0.5f, 1.2f, 0.3f), new Vector3(0.5f, 0.8f, 0.5f), vein);
 			}
 			Sign(world, "IRON\nOre", new Vector3(0f, 0f, -20f));
+		}
+
+		// Water, grain and clay: the other three of Lords' six resources. Colours follow Lords (#2f78a0, #b8892a, #a0613a).
+
+		static void BuildPonds(Transform world)
+		{
+			var root = new GameObject("Ponds").transform;
+			root.SetParent(world, false);
+			var rim = Mat("PondRim", new Color(0.45f, 0.42f, 0.38f));
+			var water = Mat("Water", new Color(0.18f, 0.47f, 0.63f));
+			var spots = new[] { new Vector3(-30f, 0f, 22f), new Vector3(-24f, 0f, 26f), new Vector3(-20f, 0f, 21f), new Vector3(-31f, 0f, 29f), new Vector3(-25f, 0f, 32f) };
+			for (var i = 0; i < spots.Length; i++)
+			{
+				var node = NewNode(root, "Pond_" + i, spots[i], Items.Water, "resources/water-node", 3, 1f);
+				var capsule = node.gameObject.AddComponent<CapsuleCollider>();
+				capsule.radius = 1.9f;
+				capsule.height = 0.8f;
+				capsule.center = new Vector3(0f, 0.4f, 0f);
+				Prim(PrimitiveType.Cylinder, "Rim", node.Visual, new Vector3(0f, 0.1f, 0f), new Vector3(3.8f, 0.1f, 3.8f), rim);
+				Prim(PrimitiveType.Cylinder, "Water", node.Visual, new Vector3(0f, 0.22f, 0f), new Vector3(3.2f, 0.1f, 3.2f), water);
+			}
+			Sign(world, "PONDS\nWater", new Vector3(-14f, 0f, 24f));
+		}
+
+		static void BuildGrainFields(Transform world)
+		{
+			var root = new GameObject("GrainFields").transform;
+			root.SetParent(world, false);
+			var soil = Mat("GrainSoil", new Color(0.5f, 0.38f, 0.2f));
+			var grain = Mat("Grain", new Color(0.72f, 0.54f, 0.16f));
+			var spots = new[] { new Vector3(22f, 0f, 22f), new Vector3(28f, 0f, 26f), new Vector3(34f, 0f, 22f), new Vector3(23f, 0f, 31f), new Vector3(31f, 0f, 32f) };
+			for (var i = 0; i < spots.Length; i++)
+			{
+				var node = NewNode(root, "Grain_" + i, spots[i], Items.Grain, "resources/grain-node", 3, 1f);
+				var box = node.gameObject.AddComponent<BoxCollider>();
+				box.size = new Vector3(3.4f, 1f, 3.4f);
+				box.center = new Vector3(0f, 0.5f, 0f);
+				Prim(PrimitiveType.Cube, "Patch", node.Visual, new Vector3(0f, 0.08f, 0f), new Vector3(3.4f, 0.16f, 3.4f), soil);
+				for (var x = -1; x <= 1; x++)
+					for (var z = -1; z <= 1; z++)
+						Prim(PrimitiveType.Cube, "Stalk", node.Visual, new Vector3(x * 1f, 0.6f, z * 1f), new Vector3(0.22f, 1f, 0.22f), grain);
+			}
+			Sign(world, "FIELDS\nGrain", new Vector3(18f, 0f, 25f));
+		}
+
+		static void BuildClayPits(Transform world)
+		{
+			var root = new GameObject("ClayPits").transform;
+			root.SetParent(world, false);
+			var clay = Mat("Clay", new Color(0.63f, 0.38f, 0.23f));
+			var dark = Mat("ClayWet", new Color(0.36f, 0.2f, 0.12f));
+			var spots = new[] { new Vector3(24f, 0f, -22f), new Vector3(30f, 0f, -26f), new Vector3(36f, 0f, -22f), new Vector3(25f, 0f, -31f), new Vector3(33f, 0f, -32f) };
+			for (var i = 0; i < spots.Length; i++)
+			{
+				var node = NewNode(root, "Clay_" + i, spots[i], Items.Clay, "resources/clay-node", 3, 1.4f);
+				var box = node.gameObject.AddComponent<BoxCollider>();
+				box.size = new Vector3(3.4f, 1f, 3.4f);
+				box.center = new Vector3(0f, 0.5f, 0f);
+				Prim(PrimitiveType.Cylinder, "Pit", node.Visual, new Vector3(0f, 0.08f, 0f), new Vector3(2.4f, 0.08f, 2.4f), dark);
+				for (var k = 0; k < 6; k++)
+				{
+					var angle = k * Mathf.PI / 3f;
+					Prim(PrimitiveType.Sphere, "Mound", node.Visual, new Vector3(Mathf.Cos(angle) * 1.4f, 0.3f, Mathf.Sin(angle) * 1.4f), new Vector3(1.1f, 0.7f, 1.1f), clay);
+				}
+			}
+			Sign(world, "PITS\nClay", new Vector3(18f, 0f, -22f));
 		}
 
 		static void BuildWarehouse(Transform world)

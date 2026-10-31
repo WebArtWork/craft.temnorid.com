@@ -30,7 +30,7 @@ namespace Temnorid.Craft
 
 		ShellChrome _chrome;
 		GameObject _stockPanel;
-		Text _stockText;
+		Text _stockText, _stockWarehouse, _stockWorkers;
 		static readonly Color Panel = new Color(0.06f, 0.05f, 0.09f, 0.72f);
 		static readonly Color Accent = new Color(0.55f, 0.85f, 0.4f);
 
@@ -71,11 +71,11 @@ namespace Temnorid.Craft
 			var touch = TouchMode;
 			if (touch) BuildLookArea(root);
 
-			var left = Box("BackpackPanel", root, new Vector2(0.015f, 0.78f), new Vector2(0.24f, 0.985f), Panel);
-			_backpack = Label(left.transform, "Text", "", 30, TextAnchor.UpperLeft, new Vector2(0.06f, 0.04f), new Vector2(0.96f, 0.96f), Color.white);
+			var left = Box("BackpackPanel", root, new Vector2(0.015f, 0.58f), new Vector2(0.25f, 0.985f), Panel);
+			_backpack = Label(left.transform, "Text", "", 28, TextAnchor.UpperLeft, new Vector2(0.06f, 0.04f), new Vector2(0.96f, 0.96f), Color.white);
 
-			var right = Box("WarehousePanel", root, new Vector2(0.72f, 0.78f), new Vector2(0.985f, 0.985f), Panel);
-			_warehouse = Label(right.transform, "Text", "", 30, TextAnchor.UpperLeft, new Vector2(0.06f, 0.04f), new Vector2(0.96f, 0.96f), Color.white);
+			var right = Box("WarehousePanel", root, new Vector2(0.72f, 0.58f), new Vector2(0.985f, 0.985f), Panel);
+			_warehouse = Label(right.transform, "Text", "", 28, TextAnchor.UpperLeft, new Vector2(0.06f, 0.04f), new Vector2(0.96f, 0.96f), Color.white);
 
 			_prompt = Label(root, "Prompt", "", touch ? 34 : 38, TextAnchor.MiddleCenter, new Vector2(touch ? 0.2f : 0.2f, 0.16f), new Vector2(touch ? 0.62f : 0.8f, 0.24f), Color.white);
 			var back = Box("ProgressBack", root, new Vector2(0.4f, 0.13f), new Vector2(0.6f, 0.15f), new Color(0f, 0f, 0f, 0.6f));
@@ -96,7 +96,9 @@ namespace Temnorid.Craft
 
 			_stockPanel = Box("StockPanel", root, new Vector2(0.2f, 0.06f), new Vector2(0.8f, 0.94f), new Color(0.06f, 0.05f, 0.09f, 0.94f));
 			Label(_stockPanel.transform, "Title", "STOCK", 56, TextAnchor.MiddleCenter, new Vector2(0f, 0.86f), new Vector2(1f, 0.98f), Accent);
-			_stockText = Label(_stockPanel.transform, "Text", "", 30, TextAnchor.UpperLeft, new Vector2(0.05f, 0.2f), new Vector2(0.95f, 0.85f), Color.white);
+			_stockText = Label(_stockPanel.transform, "Backpack", "", 32, TextAnchor.UpperLeft, new Vector2(0.05f, 0.3f), new Vector2(0.48f, 0.85f), Color.white);
+			_stockWarehouse = Label(_stockPanel.transform, "Warehouse", "", 32, TextAnchor.UpperLeft, new Vector2(0.52f, 0.3f), new Vector2(0.95f, 0.85f), Color.white);
+			_stockWorkers = Label(_stockPanel.transform, "Workers", "", 28, TextAnchor.UpperLeft, new Vector2(0.05f, 0.17f), new Vector2(0.95f, 0.29f), Color.white);
 			Button(_stockPanel.transform, "Back to the settlement", new Vector2(0.2f, 0.04f), new Vector2(0.8f, 0.16f), () => _chrome.Select("world"));
 			_stockPanel.SetActive(false);
 		}
@@ -106,7 +108,12 @@ namespace Temnorid.Craft
 			if (Game == null || _backpack == null) return;
 			var session = Game.Session;
 			if (_chrome != null) _chrome.SetStatus(Game.Net != null ? "Online: " + (Game.Net.Workers.Count + 1) + " workers" : "Stored " + TotalStored(session));
-			if (_stockPanel.activeSelf) SetText(_stockText, StockText(session));
+			if (_stockPanel.activeSelf)
+			{
+				SetText(_stockText, BackpackText(session));
+				SetText(_stockWarehouse, WarehouseText(session));
+				SetText(_stockWorkers, WorkersText());
+			}
 
 			SetText(_backpack, BackpackText(session));
 			SetText(_warehouse, WarehouseText(session));
@@ -137,16 +144,11 @@ namespace Temnorid.Craft
 
 		static int TotalStored(CraftSession session) => session.Warehouse.TotalItems;
 
-		string StockText(CraftSession session)
+		string WorkersText()
 		{
-			var sb = new StringBuilder(BackpackText(session));
-			sb.Append((char)10).Append(WarehouseText(session));
-			if (Game.Net != null)
-			{
-				sb.Append((char)10).Append("WORKERS HERE").Append((char)10).Append("You");
-				foreach (var pair in Game.Net.Workers) if (pair.Value != null) sb.Append("  ·  ").Append(pair.Value.DisplayName);
-				sb.Append((char)10);
-			}
+			if (Game.Net == null) return "";
+			var sb = new StringBuilder("WORKERS HERE: You");
+			foreach (var pair in Game.Net.Workers) if (pair.Value != null) sb.Append("  ·  ").Append(pair.Value.DisplayName);
 			return sb.ToString();
 		}
 

@@ -83,7 +83,7 @@ namespace Temnorid.Craft.Tests
 			game.SaveEnabled = false;
 			Assert.IsNotNull(game.Net, "an online settlement has the link to other players");
 			Assert.IsTrue(game.Net.IsHost);
-			Assert.IsTrue(game.Net.Nodes.Count >= 15);
+			Assert.IsTrue(game.Net.Nodes.Count >= 30);
 
 			// The guest says where its worker is: the host shows it. It stands at the first tree.
 			var tree = game.Net.Nodes[0];
@@ -138,6 +138,35 @@ namespace Temnorid.Craft.Tests
 			yield return Until(() => game.Session.Warehouse.Count(Items.Wood) == 4, "the host to store the guest's load");
 			yield return Until(() => message != null && message.StartsWith("Stored 4"), "the guest to be told");
 			yield return Until(() => _guest.Entities.TryGetValue(1, out var e) && e.State == 4, "the guest to see the warehouse count");
+
+			// The new kinds work the same way: gather clay (a node the host and the guest both name by its id), then store six kinds.
+			ResourceNode pit = null;
+			foreach (var node in game.Net.Nodes) if (node.ItemId == Items.Clay) { pit = node; break; }
+			Assert.IsNotNull(pit, "a clay node");
+			var clayIndex = Array.IndexOf(Items.All, Items.Clay);
+			Assert.AreEqual(CraftNet.KindNodeBase + clayIndex, _guest.Entities[pit.NetId].Kind, "the entity names the kind");
+			Assert.AreEqual(CraftNet.StoreBase + clayIndex, 6, "clay is the sixth warehouse entity");
+			Assert.AreEqual(CraftNet.KindStore, _guest.Entities[6].Kind);
+			var pitSpot = pit.transform.position + new Vector3(2f, 0f, 0f);
+			for (var i = 0; i < 6; i++)
+			{
+				_guest.PublishPose(new NetPose { Position = pitSpot, State = 0 });
+				yield return new WaitForSeconds(0.1f);
+			}
+			got = null;
+			_guest.Send(CraftNet.GatherEvent, pit.NetId.ToString(), true);
+			yield return Until(() => got != null, "the host to hand over the clay");
+			Assert.AreEqual("clay|2", got);
+			Assert.AreEqual(2, pit.Left);
+			for (var i = 0; i < 6; i++)
+			{
+				_guest.PublishPose(new NetPose { Position = warehouse, State = 0 });
+				yield return new WaitForSeconds(0.1f);
+			}
+			_guest.Send(CraftNet.DepositEvent, "wood:1,stone:1,iron:1,water:1,grain:1,clay:2", true);
+			yield return Until(() => game.Session.Warehouse.Count(Items.Clay) == 2, "the host to store clay");
+			Assert.AreEqual(1, game.Session.Warehouse.Count(Items.Water));
+			yield return Until(() => _guest.Entities.TryGetValue(6, out var e) && e.State == 2, "the guest to see the clay count");
 		}
 
 		[UnityTest]

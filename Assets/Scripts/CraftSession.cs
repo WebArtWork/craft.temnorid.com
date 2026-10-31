@@ -10,8 +10,12 @@ namespace Temnorid.Craft
 		public const string Wood = "wood";
 		public const string Stone = "stone";
 		public const string Iron = "iron";
+		public const string Water = "water";
+		public const string Grain = "grain";
+		public const string Clay = "clay";
 
-		public static readonly string[] All = { Wood, Stone, Iron };
+		/// <summary>The same six resources, with the same ids, as the Lords game (resource.data.ts): Craft will be linked to a Lords account later.</summary>
+		public static readonly string[] All = { Wood, Stone, Iron, Water, Grain, Clay };
 
 		public static string Name(string itemId)
 		{
@@ -20,6 +24,9 @@ namespace Temnorid.Craft
 				case Wood: return "Wood";
 				case Stone: return "Stone";
 				case Iron: return "Iron";
+				case Water: return "Water";
+				case Grain: return "Grain";
+				case Clay: return "Clay";
 				default: return itemId;
 			}
 		}
@@ -40,8 +47,8 @@ namespace Temnorid.Craft
 	/// </summary>
 	public sealed class CraftSession
 	{
-		/// <summary>Slots in the backpack; each holds one kind of resource.</summary>
-		public const int BackpackSlots = 3;
+		/// <summary>Slots in the backpack; each holds one kind of resource. One slot per kind, so all six kinds can be carried at once.</summary>
+		public const int BackpackSlots = 6;
 		public const int BackpackStack = 8;
 		public const int WarehouseSlots = 12;
 		public const int WarehouseStack = 999;

@@ -15,7 +15,7 @@ namespace Temnorid.Craft
 	/// the others show it with <see cref="RemoteWorker"/>.</item>
 	/// <item>The host publishes entities about ten times a second: ids <see cref="NodeBase"/> and up are the resource nodes
 	/// (the position in the name-sorted list of the scene's nodes, so the same on every machine; Kind <see cref="KindNodeBase"/>
-	/// plus the item index, Value the harvests left), ids 1 to 3 are the warehouse's count of each resource (State).
+	/// plus the item index, Value the harvests left), ids 1 to 6 (<see cref="StoreBase"/> plus the item index) are the warehouse's count of each resource (State).
 	/// Value of those is 1 once the goal has been reached.</item>
 	/// <item>A guest gathers by sending <c>cr.gather</c> with the node id; the host checks that the node has something left, that the
 	/// guest stands near it and is not faster than the gathering allows, takes the harvest and answers with <c>cr.got</c>
