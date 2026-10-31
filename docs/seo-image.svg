@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">Temnorid Craft</title>
+  <desc id="desc">Gather. Carry. Store. A game of gathering, crafting and production.</desc>
+  <rect width="1200" height="630" fill="#0f0d14"/>
+  <path d="M0 8H1200" stroke="#6fae4d" stroke-width="16"/>
+  <g transform="translate(72 88) scale(.75)">
+    <rect width="128" height="128" rx="28" fill="#1a1722"/>
+    <path d="M64 55 104 75 64 98 24 75Z" fill="#9bcb79"/>
+    <path d="M24 75 64 98V118L24 95Z" fill="#6fae4d"/>
+    <path d="M64 98 104 75V95L64 118Z" fill="#477533"/>
+    <path d="M64 72V39" fill="none" stroke="#c6e6a9" stroke-width="7" stroke-linecap="round"/>
+    <path d="M64 49C43 49 33 36 33 22 52 21 64 31 64 49Z" fill="#6fae4d"/>
+    <path d="M64 38C64 19 78 10 96 12 96 29 83 40 64 38Z" fill="#9bcb79"/>
+  </g>
+  <g font-family="Segoe UI, Arial, sans-serif">
+    <text x="192" y="130" fill="#e9e6f0" font-size="28" font-weight="700" letter-spacing="4">TEMNORID</text>
+    <text x="192" y="168" fill="#a9a3b8" font-size="24">A game of gathering, crafting and production</text>
+    <text x="68" y="350" fill="#e9e6f0" font-size="144" font-weight="700" letter-spacing="-4">Craft</text>
+    <text x="74" y="426" fill="#9bcb79" font-size="44" font-weight="600">Gather. Carry. Store.</text>
+    <path d="M72 498H1128" stroke="#2d2838" stroke-width="2"/>
+    <text x="72" y="552" fill="#a9a3b8" font-size="25">craft.temnorid.com</text>
+    <text x="1128" y="552" fill="#a9a3b8" font-size="25" text-anchor="end">A Temnorid game</text>
+  </g>
+  <g transform="translate(820 246)">
+    <path d="m0 48 96-48 96 48-96 56Z" fill="#9bcb79"/>
+    <path d="m0 48 96 56v100L0 148Z" fill="#6fae4d"/>
+    <path d="m96 104 96-56v100l-96 56Z" fill="#477533"/>
+    <path d="M96 36V-56" fill="none" stroke="#c6e6a9" stroke-width="12" stroke-linecap="round"/>
+    <path d="M96-26C40-26 19-58 19-98c51 0 77 26 77 72Z" fill="#6fae4d"/>
+    <path d="M96-54c0-46 35-74 83-68 0 45-34 74-83 68Z" fill="#9bcb79"/>
+    <path d="m24 99 48 28m-48 13 48 28m48-41 48-28m-48 69 48-28" stroke="#0f0d14" stroke-opacity=".25" stroke-width="5" stroke-linecap="round"/>
+  </g>
+</svg>

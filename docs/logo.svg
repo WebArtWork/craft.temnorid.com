@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 128 128" role="img" aria-labelledby="title">
+  <title id="title">Temnorid Craft — a sprout growing from a resource crate</title>
+  <rect width="128" height="128" rx="28" fill="#1a1722"/>
+  <path d="M64 55 104 75 64 98 24 75Z" fill="#9bcb79"/>
+  <path d="M24 75 64 98V118L24 95Z" fill="#6fae4d"/>
+  <path d="M64 98 104 75V95L64 118Z" fill="#477533"/>
+  <path d="M64 72V39" fill="none" stroke="#c6e6a9" stroke-width="7" stroke-linecap="round"/>
+  <path d="M64 49C43 49 33 36 33 22 52 21 64 31 64 49Z" fill="#6fae4d"/>
+  <path d="M64 38C64 19 78 10 96 12 96 29 83 40 64 38Z" fill="#9bcb79"/>
+</svg>
