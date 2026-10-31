@@ -30,9 +30,10 @@
       "source": "git",
       "dependencies": {
         "com.unity.modules.unitywebrequest": "1.0.0",
-        "com.unity.modules.jsonserialize": "1.0.0"
+        "com.unity.modules.jsonserialize": "1.0.0",
+        "com.unity.nuget.newtonsoft-json": "3.2.2"
       },
-      "hash": "0ac0681cdbfd3a6be9d5164193fce87765949a51"
+      "hash": "67e38b98fa10eca3ef7bf038290be86e55a1b9de"
     },
     "com.itkamianets.3d-unity-character": {
       "version": "https://github.com/IT-Kamianets/3d-unity-character.git",
@@ -126,6 +127,15 @@
         "com.unity.modules.jsonserialize": "1.0.0"
       },
       "hash": "bfe4d27e4e8efc131810b962c09c53fe3b3993b0"
+    },
+    "com.itkamianets.temnorid-village": {
+      "version": "https://github.com/WebArtWork/temnorid-village.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.unity.nuget.newtonsoft-json": "3.2.2"
+      },
+      "hash": "c86eaf329907a39933583f7923bc1d77b454752b"
     },
     "com.unity.ai.navigation": {
       "version": "2.0.15",

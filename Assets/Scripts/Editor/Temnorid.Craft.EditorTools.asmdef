@@ -9,7 +9,8 @@
     "ITKamianets.Engine.Graybox",
     "ITKamianets.Engine.Graybox.Editor",
     "ITKamianets.Engine.Shell",
-    "ITKamianets.Engine.Shell.Editor"
+    "ITKamianets.Engine.Shell.Editor",
+    "Temnorid.Village"
   ],
   "includePlatforms": [
     "Editor"

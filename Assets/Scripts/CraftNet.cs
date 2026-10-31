@@ -8,14 +8,16 @@ using UnityEngine;
 namespace Temnorid.Craft
 {
 	/// <summary>
-	/// Makes the settlement a shared sandbox for up to four workers. The host owns the world (the resource nodes and the
-	/// warehouse) and applies what the others ask for after checking it; each person's backpack stays with that person.
+	/// Makes the settlement a shared sandbox for up to four workers. The host owns the world (the village, its farm's gather spots and the
+	/// lord's stock) and applies what the others ask for after checking it; each person's backpack stays with that person. A guest has no
+	/// village of its own: it asks the host (<see cref="HelloEvent"/>) and is sent the village once (<see cref="VillageEvent"/>); only the
+	/// host ever writes to Lords.
 	/// <list type="bullet">
 	/// <item>Each worker is simulated by its owner and published as a pose (A is the load carried, State 1 while gathering);
 	/// the others show it with <see cref="RemoteWorker"/>.</item>
 	/// <item>The host publishes entities about ten times a second: ids <see cref="NodeBase"/> and up are the resource nodes
 	/// (the position in the name-sorted list of the scene's nodes, so the same on every machine; Kind <see cref="KindNodeBase"/>
-	/// plus the item index, Value the harvests left), ids 1 to 6 (<see cref="StoreBase"/> plus the item index) are the warehouse's count of each resource (State).
+	/// plus the item index, Value the harvests left), ids 1 to 6 (<see cref="StoreBase"/> plus the item index) are the stock's count of each resource (State).
 	/// Value of those is 1 once the goal has been reached.</item>
 	/// <item>A guest gathers by sending <c>cr.gather</c> with the node id; the host checks that the node has something left, that the
 	/// guest stands near it and is not faster than the gathering allows, takes the harvest and answers with <c>cr.got</c>
@@ -38,11 +40,18 @@ namespace Temnorid.Craft
 		public const string GotEvent = "cr.got";
 		public const string BackEvent = "cr.back";
 		public const string MessageEvent = "cr.msg";
+		/// <summary>A guest asks the host for the village (retried until it arrives). The "host." prefix keeps the net layer from passing it on to the other guests.</summary>
+		public const string HelloEvent = "host.cr.hello";
+		/// <summary>The host's answer to one guest: the village as <see cref="Temnorid.Village.VillageData"/> JSON.</summary>
+		public const string VillageEvent = "cr.village";
 
 		const float PoseEvery = 1f / 15f;
 		const float EntitiesEvery = 0.1f;
 		/// <summary>How far from a node or the warehouse a guest may be when it asks (its pose is a little old).</summary>
 		const float ReachSlack = 3f;
+		/// <summary>A guest asks for the village again this often until it has it, and gives up after <see cref="VillageWaitSeconds"/>.</summary>
+		const float HelloEvery = 1.5f;
+		const float VillageWaitSeconds = 30f;
 
 		CraftGame _game;
 		NetSession _net;
@@ -50,6 +59,8 @@ namespace Temnorid.Craft
 		bool _leaving;
 		float _nextPose;
 		float _nextEntities;
+		float _nextHello;
+		float _helloUntil;
 		Vector3 _lastPos;
 		float _lastPosAt;
 		Material _template;
@@ -73,6 +84,8 @@ namespace Temnorid.Craft
 			_net.On(GotEvent, OnGot);
 			_net.On(BackEvent, OnBack);
 			_net.On(MessageEvent, OnMessage);
+			_net.On(HelloEvent, OnHello);
+			_net.On(VillageEvent, OnVillage);
 			_net.Disconnected += OnDisconnected;
 			_net.PlayerLeft += OnPlayerLeft;
 			_net.EntityUpdated += OnEntity;
@@ -87,6 +100,8 @@ namespace Temnorid.Craft
 			_net.Off(GotEvent, OnGot);
 			_net.Off(BackEvent, OnBack);
 			_net.Off(MessageEvent, OnMessage);
+			_net.Off(HelloEvent, OnHello);
+			_net.Off(VillageEvent, OnVillage);
 			_net.Disconnected -= OnDisconnected;
 			_net.PlayerLeft -= OnPlayerLeft;
 			_net.EntityUpdated -= OnEntity;
@@ -94,7 +109,24 @@ namespace Temnorid.Craft
 
 		void Start()
 		{
-			// The nodes exist now (they enable before any Start). Every machine sorts them the same way, so an index names a node.
+			_helloUntil = Time.unscaledTime + VillageWaitSeconds;
+			_worker = FindAnyObjectByType<PlayerWorker>();
+			if (_worker != null)
+			{
+				_lastPos = _worker.transform.position;
+				_lastPosAt = Time.unscaledTime;
+				var renderer = _worker.GetComponentInChildren<Renderer>();
+				_template = renderer != null ? renderer.sharedMaterial : null;
+			}
+		}
+
+		/// <summary>
+		/// The village is drawn and its gather spots exist (the game calls this, whenever that happens). Every machine sorts the nodes by name the same
+		/// way, so an index names a node; the names come from the plot ids, which the village data carries.
+		/// </summary>
+		public void VillageReady()
+		{
+			_nodes.Clear();
 			_nodes.AddRange(ResourceNode.All);
 			_nodes.Sort((a, b) => string.CompareOrdinal(a.name, b.name));
 			for (var i = 0; i < _nodes.Count; i++)
@@ -102,25 +134,12 @@ namespace Temnorid.Craft
 				_nodes[i].NetId = NodeBase + i;
 				if (_net.IsClient) _nodes[i].Remote = true;
 			}
-
-			// Workers start side by side, in the order of the roster (the host first).
-			_worker = FindAnyObjectByType<PlayerWorker>();
+			if (_worker == null) _worker = FindAnyObjectByType<PlayerWorker>();
 			if (_worker != null)
 			{
-				var players = _net.Players;
-				var slot = 0;
-				for (var i = 0; i < players.Count; i++) if (players[i].Id == _net.LocalId) slot = i;
-				var spot = _worker.transform.position + Vector3.right * ((slot - (players.Count - 1) * 0.5f) * 1.6f);
-				var controller = _worker.GetComponent<CharacterController>();
-				if (controller != null) controller.enabled = false;
-				_worker.transform.position = spot;
-				if (controller != null) controller.enabled = true;
-				_lastPos = spot;
+				_lastPos = _worker.transform.position;
 				_lastPosAt = Time.unscaledTime;
-				var renderer = _worker.GetComponentInChildren<Renderer>();
-				_template = renderer != null ? renderer.sharedMaterial : null;
 			}
-
 			if (_net.IsClient) foreach (var entity in new List<NetEntity>(_net.Entities.Values)) OnEntity(entity);
 		}
 
@@ -129,6 +148,7 @@ namespace Temnorid.Craft
 		void Update()
 		{
 			if (_net == null || !_net.IsOnline) return;
+			if (_net.IsClient && !_game.HasVillage) AskForVillage();
 			ShowWorkers();
 
 			if (Time.unscaledTime >= _nextPose)
@@ -142,6 +162,22 @@ namespace Temnorid.Craft
 				_nextEntities = Time.unscaledTime + EntitiesEvery;
 				Publish();
 			}
+		}
+
+		// A guest has no village of its own: it asks the host until the answer comes, and leaves if it never does.
+		void AskForVillage()
+		{
+			if (_leaving) return;
+			if (Time.unscaledTime > _helloUntil)
+			{
+				_leaving = true;
+				_game.ShowToast("The host's village did not arrive.");
+				_game.QuitToMenu();
+				return;
+			}
+			if (Time.unscaledTime < _nextHello) return;
+			_nextHello = Time.unscaledTime + HelloEvery;
+			_net.Send(HelloEvent, "", true);
 		}
 
 		NetPose MyPose()
@@ -204,7 +240,7 @@ namespace Temnorid.Craft
 				{
 					Id = StoreBase + i,
 					Kind = KindStore,
-					State = _game.Session.Warehouse.Count(Items.All[i]),
+					State = _game.Session.Stock.Count(Items.All[i]),
 					Value = _game.Session.GoalReached ? 1f : 0f,
 				});
 			}
@@ -256,7 +292,7 @@ namespace Temnorid.Craft
 
 		void OnGather(ulong sender, string payload)
 		{
-			if (!_net.IsHost || _net.Find(sender) == null) return;
+			if (!_net.IsHost || !_game.HasVillage || _net.Find(sender) == null) return;
 			if (!int.TryParse(payload, NumberStyles.Integer, CultureInfo.InvariantCulture, out var id)) return;
 			var index = id - NodeBase;
 			if (index < 0 || index >= _nodes.Count) return;
@@ -280,14 +316,14 @@ namespace Temnorid.Craft
 		void OnDeposit(ulong sender, string payload)
 		{
 			if (!_net.IsHost || _net.Find(sender) == null) return;
-			if (Warehouse.Instance == null || !Near(sender, Warehouse.Instance.DistanceFrom)) return;
+			if (!_game.HasVillage || Warehouse.Instance == null || !Near(sender, Warehouse.Instance.DistanceFrom)) return;
 			if (!TryParseLoad(payload, out var load)) return;
 
 			var stored = 0;
 			_text.Clear();
 			foreach (var pair in load)
 			{
-				var fitted = _game.Session.StoreInWarehouse(pair.Key, pair.Value);
+				var fitted = _game.Session.StoreInStock(pair.Key, pair.Value);
 				stored += fitted;
 				if (fitted < pair.Value)
 				{
@@ -335,7 +371,23 @@ namespace Temnorid.Craft
 			if (_net.IsHost) _net.SendTo(player, MessageEvent, text);
 		}
 
+		/// <summary>A guest asks for the village: the host answers that guest only (nothing before its own village is drawn: the guest asks again).</summary>
+		void OnHello(ulong sender, string payload)
+		{
+			if (!_net.IsHost || !_game.HasVillage || _net.Find(sender) == null) return;
+			_net.SendTo(sender, VillageEvent, _game.VillageJson);
+		}
+
 		// ---- a guest is told ----
+
+		/// <summary>The host's village arrived: draw it. A message that is not a village is ignored.</summary>
+		void OnVillage(ulong sender, string json)
+		{
+			if (!_net.IsClient || _game.HasVillage) return;
+			var data = Temnorid.Village.VillageData.FromJson(json);
+			if (data == null || data.Plots.Count == 0) return;
+			_game.ApplyClientVillage(data);
+		}
 
 		void OnGot(ulong sender, string payload)
 		{
@@ -351,7 +403,7 @@ namespace Temnorid.Craft
 		{
 			if (!_net.IsClient || !TryParseLoad(payload, out var load)) return;
 			foreach (var pair in load) _game.Session.Gather(pair.Key, pair.Value);
-			_game.ShowToast("The warehouse is full: you keep the rest.");
+			_game.ShowToast("The stores are full: you keep the rest.");
 		}
 
 		void OnMessage(ulong sender, string text)
@@ -365,7 +417,7 @@ namespace Temnorid.Craft
 			if (entity.Kind == KindStore)
 			{
 				var index = entity.Id - StoreBase;
-				if (index >= 0 && index < Items.All.Length) _game.MirrorWarehouse(Items.All[index], entity.State, entity.Value > 0.5f);
+				if (index >= 0 && index < Items.All.Length) _game.MirrorStock(Items.All[index], entity.State, entity.Value > 0.5f);
 				return;
 			}
 			var node = entity.Id - NodeBase;

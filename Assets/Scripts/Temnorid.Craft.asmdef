@@ -12,7 +12,9 @@
     "ITKamianets.Engine.Graybox",
     "ITKamianets.Engine.Shell",
     "ITKamianets.Engine.Net",
-    "ITKamianets.Engine.Update"
+    "ITKamianets.Engine.Update",
+    "ITKamianets.Engine.Account",
+    "Temnorid.Village"
   ],
   "includePlatforms": [],
   "excludePlatforms": [],

@@ -30,7 +30,7 @@ namespace Temnorid.Craft
 
 		ShellChrome _chrome;
 		GameObject _stockPanel;
-		Text _stockText, _stockWarehouse, _stockWorkers;
+		Text _stockText, _stockWarehouse, _stockWorkers, _stockVillage, _loading;
 		static readonly Color Panel = new Color(0.06f, 0.05f, 0.09f, 0.72f);
 		static readonly Color Accent = new Color(0.55f, 0.85f, 0.4f);
 
@@ -83,6 +83,7 @@ namespace Temnorid.Craft
 			var fill = Box("ProgressFill", back.transform, Vector2.zero, new Vector2(0f, 1f), Accent);
 			_barFill = fill.GetComponent<Image>();
 
+			_loading = Label(root, "Loading", "", 56, TextAnchor.MiddleCenter, new Vector2(0.1f, 0.4f), new Vector2(0.9f, 0.62f), Color.white);
 			_toast = Label(root, "Toast", "", 44, TextAnchor.MiddleCenter, new Vector2(0.25f, 0.7f), new Vector2(0.75f, 0.78f), Accent);
 			_banner = Label(root, "Banner", "", 80, TextAnchor.MiddleCenter, new Vector2(0.1f, 0.42f), new Vector2(0.9f, 0.62f), new Color(1f, 0.9f, 0.4f));
 			if (!touch) Label(root, "Hint", "WASD move  ·  Shift run  ·  Space jump  ·  hold E gather, press E store  ·  V camera  ·  Esc pause", 22, TextAnchor.LowerLeft, new Vector2(0.015f, 0.01f), new Vector2(0.9f, 0.06f), new Color(1f, 1f, 1f, 0.7f));
@@ -95,9 +96,10 @@ namespace Temnorid.Craft
 			_pause.SetActive(false);
 
 			_stockPanel = Box("StockPanel", root, new Vector2(0.2f, 0.06f), new Vector2(0.8f, 0.94f), new Color(0.06f, 0.05f, 0.09f, 0.94f));
-			Label(_stockPanel.transform, "Title", "STOCK", 56, TextAnchor.MiddleCenter, new Vector2(0f, 0.86f), new Vector2(1f, 0.98f), Accent);
-			_stockText = Label(_stockPanel.transform, "Backpack", "", 32, TextAnchor.UpperLeft, new Vector2(0.05f, 0.3f), new Vector2(0.48f, 0.85f), Color.white);
-			_stockWarehouse = Label(_stockPanel.transform, "Warehouse", "", 32, TextAnchor.UpperLeft, new Vector2(0.52f, 0.3f), new Vector2(0.95f, 0.85f), Color.white);
+			Label(_stockPanel.transform, "Title", "STOCK", 56, TextAnchor.MiddleCenter, new Vector2(0f, 0.88f), new Vector2(1f, 0.99f), Accent);
+			_stockVillage = Label(_stockPanel.transform, "Village", "", 28, TextAnchor.UpperCenter, new Vector2(0.03f, 0.78f), new Vector2(0.97f, 0.88f), new Color(1f, 0.95f, 0.7f));
+			_stockText = Label(_stockPanel.transform, "Backpack", "", 32, TextAnchor.UpperLeft, new Vector2(0.05f, 0.3f), new Vector2(0.48f, 0.77f), Color.white);
+			_stockWarehouse = Label(_stockPanel.transform, "Warehouse", "", 32, TextAnchor.UpperLeft, new Vector2(0.52f, 0.3f), new Vector2(0.95f, 0.77f), Color.white);
 			_stockWorkers = Label(_stockPanel.transform, "Workers", "", 28, TextAnchor.UpperLeft, new Vector2(0.05f, 0.17f), new Vector2(0.95f, 0.29f), Color.white);
 			Button(_stockPanel.transform, "Back to the settlement", new Vector2(0.2f, 0.04f), new Vector2(0.8f, 0.16f), () => _chrome.Select("world"));
 			_stockPanel.SetActive(false);
@@ -107,12 +109,14 @@ namespace Temnorid.Craft
 		{
 			if (Game == null || _backpack == null) return;
 			var session = Game.Session;
-			if (_chrome != null) _chrome.SetStatus(Game.Net != null ? "Online: " + (Game.Net.Workers.Count + 1) + " workers" : "Stored " + TotalStored(session));
+			if (_chrome != null) _chrome.SetStatus(Game.Net != null ? "Online: " + (Game.Net.Workers.Count + 1) + " workers" : Game.Village != null ? Game.Village.Title : "Loading");
+			SetText(_loading, Game.Loading ? (Game.Net != null && Game.Net.IsClient ? "Loading the host's village…" : "Loading your village…") : "");
 			if (_stockPanel.activeSelf)
 			{
 				SetText(_stockText, BackpackText(session));
 				SetText(_stockWarehouse, WarehouseText(session));
 				SetText(_stockWorkers, WorkersText());
+				SetText(_stockVillage, VillageText());
 			}
 
 			SetText(_backpack, BackpackText(session));
@@ -142,7 +146,18 @@ namespace Temnorid.Craft
 			Game.SetUiHold(id != "world");
 		}
 
-		static int TotalStored(CraftSession session) => session.Warehouse.TotalItems;
+		// The village on screen, and why: "Ann's village  ·  Linked to Lords." or "Standard village  ·  Guest account: ...".
+		string VillageText()
+		{
+			var village = Game.Village;
+			if (village == null) return "";
+			_text.Clear();
+			_text.Append(village.Title);
+			var status = village.IsLords && !string.IsNullOrEmpty(village.Stock.Status) ? village.Stock.Status : village.Status;
+			if (Game.Net != null && Game.Net.IsClient) status = village.Status;
+			if (!string.IsNullOrEmpty(status)) _text.Append("  ·  ").Append(status);
+			return _text.ToString();
+		}
 
 		string WorkersText()
 		{
@@ -205,17 +220,17 @@ namespace Temnorid.Craft
 			return _text.ToString();
 		}
 
+		// The lord's stores: what is there now and what the stores hold at most, then the goal of this visit.
 		string WarehouseText(CraftSession session)
 		{
 			_text.Clear();
-			_text.Append("WAREHOUSE  (goal ").Append(session.Goal).Append(")\n");
+			var stock = session.Stock;
+			_text.Append(stock.IsShared ? "STORES  (shared with Lords)\n" : "STORES\n");
 			foreach (var id in Items.All)
-			{
-				var stored = session.Warehouse.Count(id);
-				_text.Append(Items.Name(id)).Append("  ").Append(stored).Append(" / ").Append(session.Goal);
-				if (stored >= session.Goal) _text.Append("  done");
-				_text.Append('\n');
-			}
+				_text.Append(Items.Name(id)).Append("  ").Append(stock.Count(id)).Append(" / ").Append(Mathf.RoundToInt((float)stock.Capacity(id))).Append('\n');
+			var done = 0;
+			foreach (var id in Items.All) if (session.StoredThisVisit(id) >= session.Goal) done++;
+			_text.Append("GOAL  store ").Append(session.Goal).Append(" of each: ").Append(session.GoalReached ? "done" : done + " of " + Items.All.Length);
 			return _text.ToString();
 		}
 

@@ -4,6 +4,7 @@
   "references": [
     "Temnorid.Craft",
     "ITKamianets.Engine.Inventory",
+    "Temnorid.Village",
     "UnityEngine.TestRunner",
     "UnityEditor.TestRunner"
   ],
@@ -11,7 +12,7 @@
   "excludePlatforms": [],
   "allowUnsafeCode": false,
   "overrideReferences": true,
-  "precompiledReferences": ["nunit.framework.dll"],
+  "precompiledReferences": ["nunit.framework.dll", "Newtonsoft.Json.dll"],
   "autoReferenced": false,
   "defineConstraints": ["UNITY_INCLUDE_TESTS"],
   "versionDefines": [],
