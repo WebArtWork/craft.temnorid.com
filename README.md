@@ -4,7 +4,7 @@
 
 Gathering, crafting and production. A [Temnorid](https://temnorid.com) game for **Windows**, built on the [IT Kamianets 3D Engine](https://3d.itkamianets.com) with Unity 6000.6.
 
-**Version 0.4.0.** Windows, Android and iOS. Website: https://craft.temnorid.com · Download: [Temnorid-Craft-Setup.exe](https://github.com/WebArtWork/craft.temnorid.com/releases/latest/download/Temnorid-Craft-Setup.exe)
+**Version 0.4.1.** Windows, Android and iOS. Website: https://craft.temnorid.com · Download: [Temnorid-Craft-Setup.exe](https://github.com/WebArtWork/craft.temnorid.com/releases/latest/download/Temnorid-Craft-Setup.exe)
 
 ## What it is
 
@@ -130,7 +130,7 @@ Release steps (when the first playable is ready):
 
 1. Build the Windows player from Unity (File > Build Profiles > Windows).
 2. Wrap the build in a Windows installer named `Temnorid-Craft-Setup.exe`.
-3. Create a GitHub Release (tag `v0.4.0`) and attach that file.
+3. Create a GitHub Release (tag `v0.4.1`) and attach that file.
 4. Open the website, click the button, install, play, save, restart, uninstall.
 
 When you change the game's description, controls or rules, update this README and `docs/index.html` together.

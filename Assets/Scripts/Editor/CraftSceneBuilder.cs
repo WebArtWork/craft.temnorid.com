@@ -21,7 +21,7 @@ namespace Temnorid.Craft.EditorTools
 	public static class CraftSceneBuilder
 	{
 		const string ScenePath = "Assets/Scenes/Main.unity";
-		public const string Version = "0.4.0";
+		public const string Version = "0.4.1";
 		const string MaterialDir = "Assets/Materials";
 
 		[MenuItem("Temnorid/Craft/Build Scene")]
