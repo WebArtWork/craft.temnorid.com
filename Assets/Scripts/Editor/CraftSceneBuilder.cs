@@ -1,5 +1,6 @@
 using ITKamianets.Engine.Graybox;
 using ITKamianets.Engine.Graybox.EditorTools;
+using ITKamianets.Engine.Shell.Editor;
 using System;
 using ITKamianets.Engine.Character;
 using ITKamianets.Engine.CharacterView;
@@ -19,14 +20,13 @@ namespace Temnorid.Craft.EditorTools
 	public static class CraftSceneBuilder
 	{
 		const string ScenePath = "Assets/Scenes/Main.unity";
+		public const string Version = "0.2.0";
 		const string MaterialDir = "Assets/Materials";
 
 		[MenuItem("Temnorid/Craft/Build Scene")]
 		public static void Build()
 		{
-			PlayerSettings.productName = "Temnorid Craft";
-			PlayerSettings.companyName = "Temnorid";
-			PlayerSettings.bundleVersion = "0.1.0";
+			ShellSceneKit.ApplyPlatformSettings("Temnorid", "Temnorid Craft", "com.itkamianets.craft", Version);
 			PlayerSettings.SetApplicationIdentifier(NamedBuildTarget.Standalone, "com.itkamianets.craft");
 			PlayerSettings.runInBackground = true;
 			PlayerSettings.fullScreenMode = FullScreenMode.FullScreenWindow;
@@ -44,6 +44,7 @@ namespace Temnorid.Craft.EditorTools
 
 			var player = BuildPlayer();
 			var camera = BuildCameraAndLight(player.GetComponent<CharacterMotor>());
+			var cameraName = camera.name;
 
 			var gameObject = new GameObject("Game");
 			var game = gameObject.AddComponent<CraftGame>();
@@ -54,9 +55,11 @@ namespace Temnorid.Craft.EditorTools
 			hud.Worker = worker;
 
 			EditorSceneManager.SaveScene(scene, ScenePath);
-			EditorBuildSettings.scenes = new[] { new EditorBuildSettingsScene(ScenePath, true) };
+			ShellSceneKit.BuildBoot();
+			ShellSceneKit.BuildMenu();
+			ShellSceneKit.SetBuildOrder(ScenePath);
 			AssetDatabase.SaveAssets();
-			Debug.Log("[Craft] Scene built: " + ScenePath + " (camera " + camera.name + ")");
+			Debug.Log("[Craft] Scene built: " + ScenePath + " (camera " + cameraName + ")");
 		}
 
 		// ---- the world ----

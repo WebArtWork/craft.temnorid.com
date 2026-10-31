@@ -4,6 +4,9 @@
   "references": [
     "Temnorid.Craft",
     "ITKamianets.Engine.Inventory",
+    "ITKamianets.Engine.Net",
+    "ITKamianets.Engine.Input",
+    "Unity.InputSystem",
     "UnityEngine.TestRunner",
     "UnityEditor.TestRunner"
   ],

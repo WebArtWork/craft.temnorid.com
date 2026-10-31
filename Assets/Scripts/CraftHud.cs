@@ -3,7 +3,9 @@ using System.Text;
 using ITKamianets.Engine.Input;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using ITKamianets.Engine.Shell;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.OnScreen;
 using UnityEngine.InputSystem.UI;
 using UnityEngine.UI;
 
@@ -19,6 +21,16 @@ namespace Temnorid.Craft
 		public CraftGame Game;
 		public PlayerWorker Worker;
 
+		/// <summary>Tests set this to build the touch controls on a desktop.</summary>
+		public static bool ForceTouch;
+		/// <summary>True on a phone (or when forced): texts name the touch buttons, not keys.</summary>
+		public static bool TouchMode => TouchButton.IsNeeded || ForceTouch;
+
+		public bool HasTouchControls { get; private set; }
+
+		ShellChrome _chrome;
+		GameObject _stockPanel;
+		Text _stockText;
 		static readonly Color Panel = new Color(0.06f, 0.05f, 0.09f, 0.72f);
 		static readonly Color Accent = new Color(0.55f, 0.85f, 0.4f);
 
@@ -45,7 +57,19 @@ namespace Temnorid.Craft
 			scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
 			scaler.referenceResolution = new Vector2(1920f, 1080f);
 			scaler.matchWidthOrHeight = 0.5f;
-			var root = canvasObject.transform;
+			// The shell's bars (top, and the places at the bottom on a phone); the game's own screen lives between them.
+			_chrome = ShellChrome.Create(transform);
+			_chrome.PlaceSelected += OnPlace;
+			var hudObject = new GameObject("Hud", typeof(RectTransform));
+			hudObject.transform.SetParent(canvasObject.transform, false);
+			var hudRect = (RectTransform)hudObject.transform;
+			hudRect.anchorMin = new Vector2(0f, _chrome.BottomFraction);
+			hudRect.anchorMax = new Vector2(1f, 1f - _chrome.TopFraction);
+			hudRect.offsetMin = Vector2.zero;
+			hudRect.offsetMax = Vector2.zero;
+			var root = hudObject.transform;
+			var touch = TouchMode;
+			if (touch) BuildLookArea(root);
 
 			var left = Box("BackpackPanel", root, new Vector2(0.015f, 0.78f), new Vector2(0.24f, 0.985f), Panel);
 			_backpack = Label(left.transform, "Text", "", 30, TextAnchor.UpperLeft, new Vector2(0.06f, 0.04f), new Vector2(0.96f, 0.96f), Color.white);
@@ -53,7 +77,7 @@ namespace Temnorid.Craft
 			var right = Box("WarehousePanel", root, new Vector2(0.72f, 0.78f), new Vector2(0.985f, 0.985f), Panel);
 			_warehouse = Label(right.transform, "Text", "", 30, TextAnchor.UpperLeft, new Vector2(0.06f, 0.04f), new Vector2(0.96f, 0.96f), Color.white);
 
-			_prompt = Label(root, "Prompt", "", 38, TextAnchor.MiddleCenter, new Vector2(0.2f, 0.16f), new Vector2(0.8f, 0.24f), Color.white);
+			_prompt = Label(root, "Prompt", "", touch ? 34 : 38, TextAnchor.MiddleCenter, new Vector2(touch ? 0.2f : 0.2f, 0.16f), new Vector2(touch ? 0.62f : 0.8f, 0.24f), Color.white);
 			var back = Box("ProgressBack", root, new Vector2(0.4f, 0.13f), new Vector2(0.6f, 0.15f), new Color(0f, 0f, 0f, 0.6f));
 			_barBack = back.GetComponent<Image>();
 			var fill = Box("ProgressFill", back.transform, Vector2.zero, new Vector2(0f, 1f), Accent);
@@ -61,19 +85,28 @@ namespace Temnorid.Craft
 
 			_toast = Label(root, "Toast", "", 44, TextAnchor.MiddleCenter, new Vector2(0.25f, 0.7f), new Vector2(0.75f, 0.78f), Accent);
 			_banner = Label(root, "Banner", "", 80, TextAnchor.MiddleCenter, new Vector2(0.1f, 0.42f), new Vector2(0.9f, 0.62f), new Color(1f, 0.9f, 0.4f));
-			Label(root, "Hint", "WASD move  ·  Shift run  ·  Space jump  ·  hold E gather, press E store  ·  V camera  ·  Esc pause", 22, TextAnchor.LowerLeft, new Vector2(0.015f, 0.01f), new Vector2(0.9f, 0.06f), new Color(1f, 1f, 1f, 0.7f));
+			if (!touch) Label(root, "Hint", "WASD move  ·  Shift run  ·  Space jump  ·  hold E gather, press E store  ·  V camera  ·  Esc pause", 22, TextAnchor.LowerLeft, new Vector2(0.015f, 0.01f), new Vector2(0.9f, 0.06f), new Color(1f, 1f, 1f, 0.7f));
+			else BuildTouch(root);
 
 			_pause = Box("PauseMenu", root, new Vector2(0.35f, 0.32f), new Vector2(0.65f, 0.68f), new Color(0.06f, 0.05f, 0.09f, 0.9f));
 			Label(_pause.transform, "Title", "PAUSED", 56, TextAnchor.MiddleCenter, new Vector2(0f, 0.68f), new Vector2(1f, 0.96f), Accent);
 			Button(_pause.transform, "Resume", new Vector2(0.2f, 0.4f), new Vector2(0.8f, 0.62f), () => Game.SetPaused(false));
-			Button(_pause.transform, "Save and quit", new Vector2(0.2f, 0.12f), new Vector2(0.8f, 0.34f), () => Game.SaveAndQuit());
+			Button(_pause.transform, "Save, main menu", new Vector2(0.2f, 0.12f), new Vector2(0.8f, 0.34f), () => Game.QuitToMenu());
 			_pause.SetActive(false);
+
+			_stockPanel = Box("StockPanel", root, new Vector2(0.2f, 0.06f), new Vector2(0.8f, 0.94f), new Color(0.06f, 0.05f, 0.09f, 0.94f));
+			Label(_stockPanel.transform, "Title", "STOCK", 56, TextAnchor.MiddleCenter, new Vector2(0f, 0.86f), new Vector2(1f, 0.98f), Accent);
+			_stockText = Label(_stockPanel.transform, "Text", "", 30, TextAnchor.UpperLeft, new Vector2(0.05f, 0.2f), new Vector2(0.95f, 0.85f), Color.white);
+			Button(_stockPanel.transform, "Back to the settlement", new Vector2(0.2f, 0.04f), new Vector2(0.8f, 0.16f), () => _chrome.Select("world"));
+			_stockPanel.SetActive(false);
 		}
 
 		void Update()
 		{
 			if (Game == null || _backpack == null) return;
 			var session = Game.Session;
+			if (_chrome != null) _chrome.SetStatus(Game.Net != null ? "Online: " + (Game.Net.Workers.Count + 1) + " workers" : "Stored " + TotalStored(session));
+			if (_stockPanel.activeSelf) SetText(_stockText, StockText(session));
 
 			SetText(_backpack, BackpackText(session));
 			SetText(_warehouse, WarehouseText(session));
@@ -92,6 +125,73 @@ namespace Temnorid.Craft
 				if (Game.Paused && EventSystem.current != null)
 					EventSystem.current.SetSelectedGameObject(_pause.GetComponentInChildren<UnityEngine.UI.Button>().gameObject);
 			}
+		}
+
+		void OnPlace(string id)
+		{
+			if (Game == null) return;
+			_stockPanel.SetActive(id == "stock");
+			// Any place but the settlement holds the game (offline); the profile panel is the shell's own.
+			Game.SetUiHold(id != "world");
+		}
+
+		static int TotalStored(CraftSession session) => session.Warehouse.TotalItems;
+
+		string StockText(CraftSession session)
+		{
+			var sb = new StringBuilder(BackpackText(session));
+			sb.Append((char)10).Append(WarehouseText(session));
+			if (Game.Net != null)
+			{
+				sb.Append((char)10).Append("WORKERS HERE").Append((char)10).Append("You");
+				foreach (var pair in Game.Net.Workers) if (pair.Value != null) sb.Append("  ·  ").Append(pair.Value.DisplayName);
+				sb.Append((char)10);
+			}
+			return sb.ToString();
+		}
+
+		// ---- touch: a stick on the left, buttons on the right, dragging anywhere else turns the view ----
+
+		void BuildLookArea(Transform parent)
+		{
+			var area = UiBuilder.Box("LookArea", parent, Vector2.zero, Vector2.one, Color.clear);
+			area.AddComponent<TouchLookArea>();
+		}
+
+		void BuildTouch(Transform parent)
+		{
+			HasTouchControls = true;
+			var holder = UiBuilder.Box("Touch", parent, Vector2.zero, Vector2.one, Color.clear);
+			holder.GetComponent<Image>().raycastTarget = false;
+			var t = holder.transform;
+
+			var stickBase = UiBuilder.Box("StickBase", t, new Vector2(0.03f, 0.07f), new Vector2(0.2f, 0.5f), new Color(1f, 1f, 1f, 0.1f));
+			stickBase.GetComponent<Image>().raycastTarget = false;
+			var knob = UiBuilder.Box("StickKnob", stickBase.transform, new Vector2(0.25f, 0.25f), new Vector2(0.75f, 0.75f), new Color(1f, 1f, 1f, 0.3f));
+			knob.SetActive(false);
+			var stick = knob.AddComponent<OnScreenStick>();
+			stick.controlPath = EngineTouchControls.Path(EngineTouchControls.Move);
+			stick.movementRange = 120f;
+			knob.SetActive(true);
+
+			TouchButtonFor(t, "Use", EngineTouchControls.Interact, new Vector2(0.78f, 0.06f), new Vector2(0.97f, 0.34f), 40);
+			TouchButtonFor(t, "Jump", EngineTouchControls.Jump, new Vector2(0.82f, 0.38f), new Vector2(0.96f, 0.58f), 32);
+			TouchButtonFor(t, "Run", EngineTouchControls.Sprint, new Vector2(0.22f, 0.07f), new Vector2(0.33f, 0.22f), 30);
+			TouchButtonFor(t, "View", EngineTouchControls.ToggleView, new Vector2(0.64f, 0.38f), new Vector2(0.76f, 0.52f), 28);
+			var bag = UiBuilder.Box("Touch Bag", t, new Vector2(0.64f, 0.06f), new Vector2(0.76f, 0.24f), new Color(1f, 1f, 1f, 0.2f));
+			Label(bag.transform, "Text", "Bag", 32, TextAnchor.MiddleCenter, Vector2.zero, Vector2.one, new Color(1f, 1f, 1f, 0.95f));
+			var bagButton = bag.AddComponent<UnityEngine.UI.Button>();
+			bagButton.onClick.AddListener(() => _chrome.Select("stock"));
+		}
+
+		void TouchButtonFor(Transform parent, string label, string control, Vector2 min, Vector2 max, int size)
+		{
+			var box = UiBuilder.Box("Touch " + label, parent, min, max, new Color(1f, 1f, 1f, 0.2f));
+			Label(box.transform, "Text", label, size, TextAnchor.MiddleCenter, Vector2.zero, Vector2.one, new Color(1f, 1f, 1f, 0.95f));
+			box.SetActive(false);
+			var button = box.AddComponent<OnScreenButton>();
+			button.controlPath = EngineTouchControls.Path(control);
+			box.SetActive(true);
 		}
 
 		string BackpackText(CraftSession session)

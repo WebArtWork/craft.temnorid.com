@@ -15,6 +15,14 @@ namespace Temnorid.Craft.EditorTools
 	public static class CraftReleaseBuilder
 	{
 		const string ScenePath = "Assets/Scenes/Main.unity";
+		static string[] EnabledScenes()
+		{
+			var list = new System.Collections.Generic.List<string>();
+			foreach (var scene in EditorBuildSettings.scenes)
+				if (scene.enabled) list.Add(scene.path);
+			return list.ToArray();
+		}
+
 		const string PlayerFolder = "Builds/Windows/TemnoridCraft";
 		const string ExeName = "TemnoridCraft.exe";
 
@@ -28,7 +36,7 @@ namespace Temnorid.Craft.EditorTools
 
 			var report = BuildPipeline.BuildPlayer(new BuildPlayerOptions
 			{
-				scenes = new[] { ScenePath },
+				scenes = EnabledScenes(), // Boot, Menu, then the settlement: set by the scene builder
 				locationPathName = PlayerFolder + "/" + ExeName,
 				target = BuildTarget.StandaloneWindows64,
 				options = BuildOptions.None,

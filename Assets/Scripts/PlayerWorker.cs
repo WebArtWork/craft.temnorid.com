@@ -23,7 +23,7 @@ namespace Temnorid.Craft
 
 		void Update()
 		{
-			if (Game == null || Game.Paused)
+			if (Game == null || Game.Paused || Game.UiHold)
 			{
 				Prompt = "";
 				Progress = 0f;
@@ -60,7 +60,7 @@ namespace Temnorid.Craft
 			{
 				Progress = 0f;
 				var carried = Game.Session.Backpack.TotalItems;
-				Prompt = carried > 0 ? $"Press E to store {carried} items in the warehouse" : "Warehouse: your backpack is empty";
+				Prompt = carried > 0 ? $"{(CraftHud.TouchMode ? "Tap Use" : "Press E")} to store {carried} items in the warehouse" : "Warehouse: your backpack is empty";
 				if (carried > 0 && pressedNow) Game.Deposit();
 				return;
 			}
@@ -74,7 +74,7 @@ namespace Temnorid.Craft
 					return;
 				}
 
-				Prompt = $"Hold E to gather {node.DisplayName}";
+				Prompt = $"{(CraftHud.TouchMode ? "Hold Use" : "Hold E")} to gather {node.DisplayName}";
 				if (down)
 				{
 					Progress += Time.deltaTime / node.GatherSeconds;

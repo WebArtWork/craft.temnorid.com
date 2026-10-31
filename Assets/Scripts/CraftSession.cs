@@ -51,7 +51,7 @@ namespace Temnorid.Craft
 		public ItemContainer Backpack { get; } = new ItemContainer(BackpackSlots, BackpackStack);
 		public ItemContainer Warehouse { get; } = new ItemContainer(WarehouseSlots, WarehouseStack);
 		public int Goal { get; }
-		public bool GoalReached { get; private set; }
+		public bool GoalReached { get; internal set; }
 
 		public CraftSession(int goal = DefaultGoal)
 		{
@@ -68,13 +68,27 @@ namespace Temnorid.Craft
 		public int Deposit(out bool goalJustReached)
 		{
 			var moved = ItemContainer.TransferAll(Backpack, Warehouse);
-			goalJustReached = false;
-			if (!GoalReached && MeetsGoal())
-			{
-				GoalReached = true;
-				goalJustReached = true;
-			}
+			goalJustReached = CheckGoal();
 			return moved;
+		}
+
+		/// <summary>Stores a number of one resource in the warehouse (a friend's load, online). Returns how many fitted.</summary>
+		public int StoreInWarehouse(string itemId, int amount) => Warehouse.AddUpTo(itemId, amount);
+
+		/// <summary>True only the first time the goal is met.</summary>
+		public bool CheckGoal()
+		{
+			if (GoalReached || !MeetsGoal()) return false;
+			GoalReached = true;
+			return true;
+		}
+
+		/// <summary>Online client: makes the warehouse show what the host reports for one resource.</summary>
+		public void MirrorWarehouse(string itemId, int count)
+		{
+			var have = Warehouse.Count(itemId);
+			if (count > have) Warehouse.AddUpTo(itemId, count - have);
+			else if (count < have) Warehouse.TryRemove(itemId, have - count);
 		}
 
 		public bool MeetsGoal()

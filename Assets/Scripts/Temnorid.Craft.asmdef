@@ -9,7 +9,10 @@
     "Unity.InputSystem",
     "UnityEngine.UI",
     "ITKamianets.Engine.UI",
-    "ITKamianets.Engine.Graybox"
+    "ITKamianets.Engine.Graybox",
+    "ITKamianets.Engine.Shell",
+    "ITKamianets.Engine.Net",
+    "ITKamianets.Engine.Update"
   ],
   "includePlatforms": [],
   "excludePlatforms": [],
