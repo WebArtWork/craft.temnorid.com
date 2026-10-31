@@ -4,179 +4,90 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Temnorid Craft</title>
-	<meta name="description" content="Temnorid Craft: Build up your farmstead, grow food, gather the six resources of Lords (wood, stone, iron, water, grain and clay), and make tools, weapons and armour. Supply the settlements in Lords with resources.">
+	<meta name="description" content="Gather six resources, fill your backpack and stock your village warehouse in Temnorid Craft. A calm Windows game for solo play or up to four friends.">
 	<link rel="canonical" href="https://craft.temnorid.com/">
-	<link rel="icon" href="./favicon.ico" sizes="16x16 32x32 48x48">
-	<link rel="icon" type="image/png" href="./favicon.png" sizes="48x48">
-	<link rel="icon" type="image/svg+xml" href="./favicon.svg" sizes="any">
-	<link rel="apple-touch-icon" href="./apple-touch-icon.png" sizes="180x180">
+	<link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
+	<link rel="icon" type="image/png" href="/favicon.png" sizes="48x48">
+	<link rel="icon" type="image/svg+xml" href="/favicon.svg" sizes="any">
+	<link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180">
 	<meta property="og:type" content="website">
-	<meta property="og:title" content="Temnorid Craft">
-	<meta property="og:description" content="Gathering, crafting and production. Gather. Carry. Store.">
-	<meta property="og:url" content="https://craft.temnorid.com/">
 	<meta property="og:site_name" content="Temnorid Craft">
+	<meta property="og:title" content="Temnorid Craft">
+	<meta property="og:description" content="Gather six resources, fill your backpack and stock your village warehouse in Temnorid Craft. A calm Windows game for solo play or up to four friends.">
+	<meta property="og:url" content="https://craft.temnorid.com/">
 	<meta property="og:locale" content="en_US">
 	<meta property="og:image" content="https://craft.temnorid.com/seo-image.png">
 	<meta property="og:image:type" content="image/png">
 	<meta property="og:image:width" content="1200">
 	<meta property="og:image:height" content="630">
-	<meta property="og:image:alt" content="Temnorid Craft — Gather. Carry. Store. A game of gathering, crafting and production.">
+	<meta property="og:image:alt" content="Temnorid Craft — Gather · Carry · Store">
 	<meta name="twitter:card" content="summary_large_image">
 	<meta name="twitter:title" content="Temnorid Craft">
-	<meta name="twitter:description" content="Gathering, crafting and production. Gather. Carry. Store.">
+	<meta name="twitter:description" content="Gather six resources, fill your backpack and stock your village warehouse in Temnorid Craft. A calm Windows game for solo play or up to four friends.">
 	<meta name="twitter:image" content="https://craft.temnorid.com/seo-image.png">
-	<meta name="twitter:image:alt" content="Temnorid Craft — Gather. Carry. Store. A game of gathering, crafting and production.">
+	<meta name="twitter:image:alt" content="Temnorid Craft — Gather · Carry · Store">
 	<meta name="theme-color" content="#0f0d14">
 	<script type="application/ld+json">
-	{
-		"@context": "https://schema.org",
-		"@type": "WebSite",
-		"@id": "https://craft.temnorid.com/#website",
-		"name": "Temnorid Craft",
-		"url": "https://craft.temnorid.com/",
-		"description": "A game of gathering, crafting and production. Gather. Carry. Store.",
-		"inLanguage": "en",
-		"image": "https://craft.temnorid.com/seo-image.png",
-		"about": {
-			"@type": "VideoGame",
-			"name": "Temnorid Craft",
-			"url": "https://craft.temnorid.com/",
-			"image": "https://craft.temnorid.com/seo-image.png",
-			"operatingSystem": "Windows 10 or later",
-			"publisher": {
-				"@type": "Organization",
-				"name": "Temnorid",
-				"url": "https://temnorid.com/"
-			}
-		},
-		"thumbnailUrl": "https://craft.temnorid.com/logo.png"
-	}
-	</script>
-	<style>
-		:root {
-			color-scheme: dark;
-			--accent: #6fae4d; --accent-soft: #9bcb79; --bg: #0f0d14;
-			--panel: #1a1722; --line: #2d2838; --text: #e9e6f0; --muted: #a9a3b8;
-			--space-1: .5rem; --space-2: .75rem; --space-3: 1rem;
-			--space-4: 1.5rem; --space-5: 2rem; --space-6: 3rem;
-			--space-7: 4rem; --space-8: 6rem;
-			--radius: .75rem;
-		}
-		* { box-sizing: border-box; }
-		html { scroll-behavior: smooth; scroll-padding-top: 7rem; }
-		body { margin: 0; background: var(--bg); color: var(--text); font: 1rem/1.65 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
-		a { color: var(--accent-soft); text-underline-offset: .25rem; }
-		a:hover { color: var(--text); }
-		button, a, summary { -webkit-tap-highlight-color: transparent; }
-		:focus-visible { outline: .125rem solid var(--accent-soft); outline-offset: .25rem; }
-		::selection { background: var(--accent); color: var(--bg); }
-		.wrap { width: min(100% - 3rem, 72rem); margin-inline: auto; }
-		.skip-link { position: absolute; top: -6rem; left: 1.5rem; z-index: 5; background: var(--accent); color: var(--bg); padding: .75rem 1.5rem; border-radius: var(--radius); }
-		.skip-link:focus { top: 1rem; }
-		header.site { position: sticky; top: 0; z-index: 2; background: var(--bg); border-bottom: .0625rem solid var(--line); }
-		header.site .wrap { min-height: 5.5rem; display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); }
-		.brand { display: inline-flex; align-items: center; gap: var(--space-2); min-height: 2.75rem; color: var(--text); text-decoration: none; font-weight: 700; white-space: nowrap; }
-		.brand img { display: block; width: 2.75rem; height: 2.75rem; }
-		nav { display: flex; align-items: center; gap: var(--space-4); }
-		nav a { display: inline-flex; align-items: center; justify-content: center; min-height: 2.75rem; color: var(--muted); text-decoration: none; }
-		nav .nav-download { color: var(--text); background: var(--panel); border: .0625rem solid var(--line); padding-inline: 1.5rem; border-radius: .625rem; }
-		nav .nav-download:hover { border-color: var(--accent); }
-		.hero { padding-block: var(--space-8); }
-		.hero-grid { display: grid; grid-template-columns: 1.35fr 1fr; align-items: center; gap: var(--space-7); }
-		.eyebrow { color: var(--accent-soft); font-size: .875rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; margin-bottom: var(--space-4); }
-		h1, h2, h3, p, figure { margin: 0; }
-		h1, h2, h3 { text-wrap: balance; }
-		h1 { max-width: 9ch; font-size: clamp(3.5rem, 6vw, 5.5rem); line-height: 1.02; letter-spacing: -.055em; font-weight: 700; }
-		.tagline { margin-top: var(--space-4); font-size: 1.5rem; line-height: 1.35; letter-spacing: -.02em; }
-		.lead { max-width: 46ch; color: var(--muted); margin-top: var(--space-4); }
-		.actions { display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-4); margin-top: var(--space-5); }
-		.btn { display: inline-flex; justify-content: center; align-items: center; min-height: 3.5rem; padding: 1rem 1.5rem; border-radius: .625rem; color: var(--bg); background: var(--accent); font-weight: 700; line-height: 1.5; text-decoration: none; text-align: center; }
-		.btn:hover { background: var(--accent-soft); color: var(--bg); }
-		.text-link { display: inline-flex; align-items: center; min-height: 2.75rem; font-weight: 600; }
-		.fine { font-size: .875rem; line-height: 1.6; color: var(--muted); }
-		.hero .fine { margin-top: var(--space-4); max-width: 52ch; }
-		.brand-art { background: var(--panel); border-radius: var(--radius); padding: var(--space-5); }
-		.brand-art img { display: block; width: 100%; max-width: 20rem; height: auto; margin-inline: auto; }
-		.brand-art figcaption { padding-top: var(--space-4); border-top: .0625rem solid var(--line); }
-		.brand-art strong { display: block; font-weight: 600; margin-bottom: var(--space-1); }
-		.resources { display: flex; flex-wrap: wrap; gap: .5rem 1rem; padding: 0; margin: 0; list-style: none; color: var(--muted); font-size: .875rem; }
-		.resources li { margin: 0; }
-		.resources li::before { content: ""; display: inline-block; width: .375rem; height: .375rem; background: var(--accent); margin-right: .5rem; vertical-align: middle; border-radius: 50%; }
-		section { padding-block: var(--space-7); border-top: .0625rem solid var(--line); }
-		.section-grid { display: grid; grid-template-columns: 1fr 2fr; gap: var(--space-7); }
-		.section-intro p { color: var(--muted); margin-top: var(--space-3); max-width: 28ch; }
-		h2 { font-size: 2rem; line-height: 1.2; letter-spacing: -.035em; }
-		h3 { font-size: 1.25rem; line-height: 1.4; letter-spacing: -.015em; font-weight: 600; }
-		.prose { max-width: 68ch; }
-		.prose > * + * { margin-top: var(--space-4); }
-		.prose p { color: var(--muted); }
-		.prose strong { color: var(--text); font-weight: 600; }
-		.note { padding: var(--space-4); background: var(--panel); border-radius: .375rem; font-size: .875rem; }
-		.steps { list-style: none; padding: 0; margin: 0; counter-reset: steps; }
-		.steps > li { counter-increment: steps; position: relative; padding-left: 3.5rem; margin-bottom: var(--space-5); }
-		.steps > li::before { content: "0" counter(steps); position: absolute; left: 0; top: .125rem; color: var(--accent-soft); font-variant-numeric: tabular-nums; font-weight: 600; }
-		.steps p { color: var(--muted); margin-top: var(--space-1); }
-		.cards { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); }
-		.card { display: flex; flex-direction: column; padding: var(--space-4); background: var(--panel); border: .0625rem solid var(--line); border-radius: var(--radius); }
-		.card p { flex: 1; color: var(--muted); margin-top: var(--space-2); }
-		kbd { display: inline-block; font: .875rem/1.5 ui-monospace, "Cascadia Code", Consolas, monospace; color: var(--text); padding: .125rem .5rem; background: var(--bg); border: .0625rem solid var(--line); border-bottom-width: .125rem; border-radius: .375rem; }
-		table { width: 100%; border-collapse: collapse; text-align: left; }
-		caption { text-align: left; font-size: .875rem; color: var(--muted); margin-bottom: var(--space-4); }
-		th, td { padding: 1rem; border-bottom: .0625rem solid var(--line); vertical-align: top; }
-		thead th { padding-top: 0; font-size: .875rem; color: var(--muted); font-weight: 600; }
-		tbody th { width: 9rem; white-space: nowrap; font-weight: 400; }
-		td { color: var(--muted); }
-		.controls-footnote { margin-top: var(--space-4); }
-		details { border-bottom: .0625rem solid var(--line); }
-		details:first-child { border-top: .0625rem solid var(--line); }
-		summary { cursor: pointer; padding: 1rem .5rem; color: var(--text); font-weight: 600; min-height: 3.5rem; }
-		summary:hover { color: var(--accent-soft); }
-		details p { padding: 0 .5rem 1.5rem; color: var(--muted); }
-		.download-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-7); }
-		#download { background: var(--panel); }
-		#download h2 { font-size: clamp(2rem, 4vw, 3rem); }
-		#download .lead { margin-bottom: var(--space-5); }
-		#download .fine { margin-top: var(--space-4); }
-		.install-steps { margin: 0; padding-left: 1.5rem; color: var(--muted); }
-		.install-steps li { padding-left: .5rem; margin-bottom: var(--space-3); }
-		.install-steps li::marker { color: var(--accent-soft); font-weight: 600; }
-		footer { padding-block: var(--space-5); color: var(--muted); font-size: .875rem; }
-		.footer-grid { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-5); }
-		footer p { max-width: 48ch; }
-		.footer-links { display: flex; flex-wrap: wrap; gap: .5rem 1.5rem; }
-		footer a { display: inline-flex; align-items: center; min-height: 2.75rem; }
-		@media (max-width: 900px) {
-			.hero-grid { gap: var(--space-5); }
-			.section-grid { grid-template-columns: 1fr 2fr; gap: var(--space-5); }
-			.cards { grid-template-columns: 1fr; }
-		}
-		@media (max-width: 640px) {
-			html { scroll-padding-top: 1.5rem; }
-			.wrap { width: calc(100% - 3rem); }
-			header.site { position: relative; }
-			header.site .wrap { flex-wrap: wrap; gap: 0; padding-top: 1rem; }
-			.brand { padding-bottom: .75rem; }
-			nav { width: 100%; justify-content: space-between; gap: .5rem; border-top: .0625rem solid var(--line); padding-block: .5rem; }
-			nav .nav-download { padding-inline: .75rem; }
-			.hero { padding-block: var(--space-6); }
-			.hero-grid, .section-grid, .download-grid { grid-template-columns: 1fr; gap: var(--space-5); }
-			h1 { max-width: none; font-size: clamp(3rem, 13vw, 4.5rem); }
-			.brand-art { padding: var(--space-4); }
-			.brand-art img { max-width: 13rem; }
-			section { padding-block: var(--space-6); }
-			.section-intro p { max-width: 48ch; margin-top: var(--space-2); }
-			.actions { gap: var(--space-2); }
-			.hero .actions { align-items: stretch; flex-direction: column; }
-			.hero .text-link { justify-content: center; }
-			.cards { grid-template-columns: 1fr; }
-			tbody th { width: 7rem; }
-			th, td { padding: .75rem .5rem; }
-			.footer-grid { flex-direction: column; gap: var(--space-3); }
-		}
-		@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
-	</style>
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://craft.temnorid.com/#website",
+      "name": "Temnorid Craft",
+      "url": "https://craft.temnorid.com/",
+      "inLanguage": "en",
+      "image": "https://craft.temnorid.com/seo-image.png",
+      "about": {
+        "@id": "https://craft.temnorid.com/#game"
+      }
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://craft.temnorid.com/#webpage",
+      "name": "Temnorid Craft",
+      "url": "https://craft.temnorid.com/",
+      "description": "Gather six resources, fill your backpack and stock your village warehouse in Temnorid Craft. A calm Windows game for solo play or up to four friends.",
+      "isPartOf": {
+        "@id": "https://craft.temnorid.com/#website"
+      },
+      "about": {
+        "@id": "https://craft.temnorid.com/#game"
+      },
+      "primaryImageOfPage": {
+        "@type": "ImageObject",
+        "url": "https://craft.temnorid.com/seo-image.png",
+        "width": 1200,
+        "height": 630
+      }
+    },
+    {
+      "@type": "VideoGame",
+      "@id": "https://craft.temnorid.com/#game",
+      "name": "Temnorid Craft",
+      "url": "https://craft.temnorid.com/",
+      "description": "Gather six resources, fill your backpack and stock your village warehouse in Temnorid Craft. A calm Windows game for solo play or up to four friends.",
+      "image": "https://craft.temnorid.com/seo-image.png",
+      "thumbnailUrl": "https://craft.temnorid.com/logo.png",
+      "genre": "Simulation",
+      "gamePlatform": "Windows",
+      "operatingSystem": "Windows 10 or later, 64-bit",
+      "softwareVersion": "0.4.1",
+      "downloadUrl": "https://github.com/WebArtWork/craft.temnorid.com/releases/latest/download/Temnorid-Craft-Setup.exe",
+      "releaseNotes": "https://github.com/WebArtWork/craft.temnorid.com/releases/tag/v0.4.1",
+      "isAccessibleForFree": true,
+      "inLanguage": "en",
+      "publisher": {
+        "@type": "Organization",
+        "name": "Temnorid",
+        "url": "https://temnorid.com/"
+      }
+    }
+  ]
+}
+</script>
+	<link rel="stylesheet" href="./site.css">
 </head>
-
 <body>
 	<a class="skip-link" href="#main">Skip to content</a>
 	<header class="site">
@@ -201,7 +112,7 @@
 					<div class="actions">
 						<a class="btn" href="https://github.com/WebArtWork/craft.temnorid.com/releases/latest/download/Temnorid-Craft-Setup.exe">Download for Windows</a>
 					</div>
-					<p class="fine">Free · Windows 10 or later, 64-bit<br>In development. The installer may not be published yet.</p>
+					<p class="fine">Free · Windows 10 or later, 64-bit<br>In development. </p>
 				</div>
 				<figure class="brand-art">
 					<img src="./logo.svg" alt="" width="512" height="512">
@@ -315,7 +226,7 @@
 			<div class="wrap download-grid">
 				<div>
 					<h2 id="download-title" data-bd-group="download-action">Download<br>Temnorid Craft.</h2>
-					<p class="lead">Temnorid Craft for Windows.<br>Free to download. Still growing.</p>
+					<p class="lead">Temnorid Craft for Windows.<br>Free to download. Still growing.</p><p class="release-status">Latest published installer: <a href="https://github.com/WebArtWork/craft.temnorid.com/releases/tag/v0.4.1">0.4.1</a>. Development version: 0.4.1.</p>
 					<a class="btn" href="https://github.com/WebArtWork/craft.temnorid.com/releases/latest/download/Temnorid-Craft-Setup.exe">Download for Windows</a>
 					<p class="fine">Windows 10 or later · 64-bit · .exe installer<br>If the installer is not available, <a href="https://github.com/WebArtWork/craft.temnorid.com/releases">check GitHub Releases</a>.</p>
 				</div>
