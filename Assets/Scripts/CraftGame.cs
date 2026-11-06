@@ -165,7 +165,7 @@ namespace Temnorid.Craft
 				_syncer = gameObject.AddComponent<StockSyncer>();
 				_syncer.Stock = session.Stock;
 			}
-			EngineLog.Info(Log, session.IsLords ? "Showing the player's Lords village." : "Showing the standard village.");
+			EngineLog.Info(Log, (session.IsLords ? "Showing the player's Lords village." : "Showing the standard village.") + $" {View.Data.Slots.Count} places, {View.Data.Buildings.Count} buildings, {View.Data.Plots.Count} plots.");
 			_villageApplied = true;
 			SetLoading(false);
 			if (Net != null) Net.VillageReady();
@@ -348,6 +348,19 @@ namespace Temnorid.Craft
 		{
 			Save();
 			if (_syncer != null) _syncer.Flush();
+		}
+
+		/// <summary>Saves, then closes the game: there is no landing screen to go back to.</summary>
+		public void QuitGame()
+		{
+			Time.timeScale = 1f;
+			EngineInput.Default.PlayerEnabled = true;
+			Save();
+#if UNITY_EDITOR
+			UnityEditor.EditorApplication.isPlaying = false;
+#else
+			Application.Quit();
+#endif
 		}
 
 		/// <summary>Saves, then leaves for the landing screen (closing any online game).</summary>

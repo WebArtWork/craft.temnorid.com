@@ -33,7 +33,7 @@
         "com.unity.modules.jsonserialize": "1.0.0",
         "com.unity.nuget.newtonsoft-json": "3.2.2"
       },
-      "hash": "67e38b98fa10eca3ef7bf038290be86e55a1b9de"
+      "hash": "87b7263e6315d169f45fbc7f02b98b23608e2c07"
     },
     "com.itkamianets.3d-unity-character": {
       "version": "https://github.com/IT-Kamianets/3d-unity-character.git",
@@ -44,7 +44,7 @@
         "com.unity.modules.physics": "1.0.0",
         "com.unity.modules.animation": "1.0.0"
       },
-      "hash": "d7a3f6bd49e72549b6a4457aca9d52bfbff01c6b"
+      "hash": "f4ce7f4ce79b6e1642deb1cbb0df3f9586d00b80"
     },
     "com.itkamianets.3d-unity-core": {
       "version": "https://github.com/IT-Kamianets/3d-unity-core.git",
@@ -106,7 +106,7 @@
         "com.unity.ugui": "2.6.0",
         "com.unity.inputsystem": "1.20.0"
       },
-      "hash": "a16c7e69e25fac03c153bc9566f50ec2951744b2"
+      "hash": "b54e00b5ac69fc0e028e91d65d6fd1531dfc333b"
     },
     "com.itkamianets.3d-unity-ui": {
       "version": "https://github.com/IT-Kamianets/3d-unity-ui.git",
@@ -135,10 +135,10 @@
       "dependencies": {
         "com.unity.nuget.newtonsoft-json": "3.2.2"
       },
-      "hash": "c86eaf329907a39933583f7923bc1d77b454752b"
+      "hash": "fca45eeafad421df28341841f5a906f5834774fb"
     },
     "com.unity.ai.navigation": {
-      "version": "2.0.15",
+      "version": "2.0.16",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -176,12 +176,10 @@
       "dependencies": {}
     },
     "com.unity.ide.rider": {
-      "version": "3.0.38",
+      "version": "3.1.0",
       "depth": 0,
       "source": "registry",
-      "dependencies": {
-        "com.unity.ext.nunit": "1.0.6"
-      },
+      "dependencies": {},
       "url": "https://packages.unity.com"
     },
     "com.unity.ide.visualstudio": {
@@ -194,7 +192,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.inputsystem": {
-      "version": "1.20.0",
+      "version": "1.20.1",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -360,7 +358,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.services.wire": {
-      "version": "1.6.0",
+      "version": "1.6.1",
       "depth": 2,
       "source": "registry",
       "dependencies": {

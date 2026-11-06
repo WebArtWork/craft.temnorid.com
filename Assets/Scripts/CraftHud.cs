@@ -92,7 +92,7 @@ namespace Temnorid.Craft
 			_pause = Box("PauseMenu", root, new Vector2(0.35f, 0.32f), new Vector2(0.65f, 0.68f), new Color(0.06f, 0.05f, 0.09f, 0.9f));
 			Label(_pause.transform, "Title", "PAUSED", 56, TextAnchor.MiddleCenter, new Vector2(0f, 0.68f), new Vector2(1f, 0.96f), Accent);
 			Button(_pause.transform, "Resume", new Vector2(0.2f, 0.4f), new Vector2(0.8f, 0.62f), () => Game.SetPaused(false));
-			Button(_pause.transform, "Save, main menu", new Vector2(0.2f, 0.12f), new Vector2(0.8f, 0.34f), () => Game.QuitToMenu());
+			Button(_pause.transform, "Save and quit", new Vector2(0.2f, 0.12f), new Vector2(0.8f, 0.34f), () => Game.QuitGame());
 			_pause.SetActive(false);
 
 			_stockPanel = Box("StockPanel", root, new Vector2(0.2f, 0.06f), new Vector2(0.8f, 0.94f), new Color(0.06f, 0.05f, 0.09f, 0.94f));
@@ -109,7 +109,6 @@ namespace Temnorid.Craft
 		{
 			if (Game == null || _backpack == null) return;
 			var session = Game.Session;
-			if (_chrome != null) _chrome.SetStatus(Game.Net != null ? "Online: " + (Game.Net.Workers.Count + 1) + " workers" : Game.Village != null ? Game.Village.Title : "Loading");
 			SetText(_loading, Game.Loading ? (Game.Net != null && Game.Net.IsClient ? "Loading the host's village…" : "Loading your village…") : "");
 			if (_stockPanel.activeSelf)
 			{

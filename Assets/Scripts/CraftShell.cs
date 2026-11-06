@@ -19,14 +19,12 @@ namespace Temnorid.Craft
 				Repo = Repo,
 				InstallerSuffix = "-Setup.exe",
 				MaxPlayers = 4,
-				Multiplayer = true,
+				// One player, straight into the village: no landing screen, no lobby, no Profile for now.
+				Multiplayer = false,
+				Profile = false,
+				SkipLanding = true,
 				GameScene = "Main",
 				Accent = new Color(0.55f, 0.85f, 0.4f),
-				Places =
-				{
-					new ShellPlace("world", "Settlement", "S"),
-					new ShellPlace("stock", "Stock", "B"),
-				},
 			};
 		}
 	}
