@@ -1,0 +1,19 @@
+{
+  "schemaVersion": "1.0.0",
+  "libraryId": "craft-temnorid",
+  "units": "meters",
+  "metadata": {
+    "tags": [
+      "assetra"
+    ],
+    "properties": {
+      "assetra": {
+        "format": 1,
+        "project": "craft-temnorid",
+        "name": "Temnorid Craft",
+        "modelsDir": "Assets/Models"
+      }
+    }
+  },
+  "assets": []
+}
